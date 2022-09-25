@@ -23,7 +23,7 @@ This sample code can be beneficial to the customers who are already running thei
 
 ### 1. Build and deploy CDK ECS Anywhere Infrastructure Stack
 
-#### 1.1. Install the package dependencies and compile the TypeScript files by running the following commands:
+1.1. Install the package dependencies and compile the TypeScript files by running the following commands:
 
 ```
 $cd EcsAnywhereCdk
@@ -32,14 +32,14 @@ $npm install
 
 $npm fund
 ```
-#### 1.2. To build the project code, run the command:
+1.2. To build the project code, run the command:
 
 ```
 npm run build
 ```
 For more information about building and deploying the project, see [Your first AWS CDK app in the AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/hello_world.html#:~:text=the%20third%20parameter.-,Synthesize%20an%20AWS%20CloudFormation%20template,-Synthesize%20an%20AWS) documentation.
 
-#### 1.3. To list the stacks, run the command:
+1.3. To list the stacks, run the command:
 
 ```
 $cdk list
@@ -48,7 +48,7 @@ To deploy the project code, run the command:
 ```
 $cdk  deploy EcsAnywhereInfraStack
 ```
-#### 1.4. Open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation, and choose the EcsAnywhereInfraStack stack. 
+1.4. Open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation, and choose the EcsAnywhereInfraStack stack. 
 
 <br />
 
@@ -58,27 +58,27 @@ $cdk  deploy EcsAnywhereInfraStack
 
 ### 2. Set up an on-premises machine
 
-#### 2.1.  For demonstration purposes, you can use [Vagrant](https://www.vagrantup.com/) to create a VM. Vagrant is an open-source utility for building and maintaining portable virtual software development environments. Create a Vagrant VM by running the vagrant up command from the root directory where Vagrantfile is placed. For more information, see the [Vagrant documentation](https://www.vagrantup.com/docs/cli/up).
+2.1.  For demonstration purposes, you can use [Vagrant](https://www.vagrantup.com/) to create a VM. Vagrant is an open-source utility for building and maintaining portable virtual software development environments. Create a Vagrant VM by running the vagrant up command from the root directory where Vagrantfile is placed. For more information, see the [Vagrant documentation](https://www.vagrantup.com/docs/cli/up).
 
-#### 2.2.  Install AWS CLI by following [AWS CLI installation](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) instructions and run following commands on VM. 
+2.2.  Install AWS CLI by following [AWS CLI installation](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) instructions and run following commands on VM. 
 
-#### 2.3. Create an activation code and ID that you can use to register your VM with AWS Systems Manager and to activate your external instance. The output from this command includes ActivationId and ActivationCode values: 
+2.3. Create an activation code and ID that you can use to register your VM with AWS Systems Manager and to activate your external instance. The output from this command includes ActivationId and ActivationCode values: 
 
 ```
 aws ssm create-activation --iam-role EcsAnywhereInstanceRole | tee ssm-activation.json
 ```
 
-#### 2.4. Export the activation ID and code values
+2.4. Export the activation ID and code values
 ```
 export ACTIVATION_ID=<activation-ID>
 
 export ACTIVATION_CODE=<activation-code>
 ```
-#### 2.5. Download the installation script to your on-premises server or VM
+2.5. Download the installation script to your on-premises server or VM
 ```
 curl --proto "https" -o "ecs-anywhere-install.sh" "https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh"
 ```
-#### 2.6. Run the installation script on your on-premises server or VM
+2.6. Run the installation script on your on-premises server or VM
 ```
 sudo bash ecs-anywhere-install.sh \
     --cluster EcsAnywhereCluster \
@@ -91,7 +91,7 @@ For more information about setting up and registering your VM, see [Registering 
 
 ### 3. Setup replication between GitLab and CodeCommit Repos and Deploy CICD Pipeline Stack.
 
-#### 3.1. Create 'main' branch on AWS CodeCommit repo by creating the first commit for a repository. You can follow AWS documentation to Create a commit in AWS CodeCommit. Below command given for reference:
+3.1. Create 'main' branch on AWS CodeCommit repo by creating the first commit for a repository. You can follow AWS documentation to Create a commit in AWS CodeCommit. Below command given for reference:
 
  ```
 aws codecommit put-file \
@@ -104,22 +104,22 @@ aws codecommit put-file \
     --commit-message "Adding README."
  ```
 
-#### 3.2. You can mirror a GitLab repository to and from external sources. You can select which repository serves as the source. Branches, tags, and commits are synced automatically. Setup [GitLab mirroring using GitLab repository mirroring](https://docs.gitlab.com/ee/user/project/repository/mirror/) documentation. Once setup, you can update a mirror manually so it would replicate code from GitLab repo to AWS CodeCommit.
+3.2. You can mirror a GitLab repository to and from external sources. You can select which repository serves as the source. Branches, tags, and commits are synced automatically. Setup [GitLab mirroring using GitLab repository mirroring](https://docs.gitlab.com/ee/user/project/repository/mirror/) documentation. Once setup, you can update a mirror manually so it would replicate code from GitLab repo to AWS CodeCommit.
 
-#### 3.3. To deploy the CICD project code, run the command:
+3.3. To deploy the CICD project code, run the command:
 
 ```
 $cdk  deploy EcsAnywherePipelineStack
 ```
 
-#### 3.4. To test the CICD Pipeline, you can make application code changes and push it to source on-prem GitLab repo. For more information, refer [GitLab push](https://docs.gitlab.com/ee/user/project/push_options.html) documentation. For instance, edit  `../application/index.html`  file to update value of "App Version" 
+3.4. To test the CICD Pipeline, you can make application code changes and push it to source on-prem GitLab repo. For more information, refer [GitLab push](https://docs.gitlab.com/ee/user/project/push_options.html) documentation. For instance, edit  `../application/index.html`  file to update value of "App Version" 
 
-#### 3.5. A repository mirror at GitLab updates automatically or can also manually trigger. For more details, refer [update a GitLab mirror](https://docs.gitlab.com/ee/user/project/repository/mirror/#update-a-mirror). 
+3.5. A repository mirror at GitLab updates automatically or can also manually trigger. For more details, refer [update a GitLab mirror](https://docs.gitlab.com/ee/user/project/repository/mirror/#update-a-mirror). 
 
-#### 3.6. After replication the code, it would merge to AWS CodeCommit repo which triggers CICD Pipeline result.
+3.6. After replication the code, it would merge to AWS CodeCommit repo which triggers CICD Pipeline result.
 
 ### 4. Clean up
-#### 4.1. After you walk through this sample code, you should remove the resources you created to avoid incurring any further charges. To clean up, run the command:
+4.1. After you walk through this sample code, you should remove the resources you created to avoid incurring any further charges. To clean up, run the command:
 
 ```
 $cdk destroy EcsAnywherePipelineStack
