@@ -50,11 +50,8 @@ $cdk  deploy EcsAnywhereInfraStack
 ```
 1.4. Open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation, and choose the EcsAnywhereInfraStack stack. 
 
-<br />
 
-#### **Please note** : *It would take sometime to setup ECS cluster meanwhile follow next steps.*
-
-<br />
+**Please note** : *It would take sometime to setup ECS cluster meanwhile follow next steps.*
 
 ### 2. Set up an on-premises machine
 
