@@ -1,4 +1,4 @@
-# Amazon ECS Anywhere CDK Samples
+# CI/CD Pipeline for Amazon ECS Anywhere using CDK
 [Amazon Elastic Container Service (ECS) Anywhere](https://aws.amazon.com/ecs/anywhere/) enables customers to easily run and manage container workloads on customer-managed infrastructure like Physical or Virtual Machines (VM). It provides a consistent tooling and API experience across your container-based applications. ECS Anywhere helps customer to reduce infrastructure and operational cost, also mitigate the complex local container orchestration. It ensures compliance requirements and provide scalability using your existing on-premise investments. 
 
  This sample code demonstrates the step by step approach to provision ECS Anywhere cluster by using [AWS Cloud Development Kit v2 (AWS CDK)](https://aws.amazon.com/cdk/) stacks. Then it setup a CI/CD Pipeline using [AWS CodePipeline](https://aws.amazon.com/codepipeline/) service. Additionally, it shows how you can replicate [GitLab code repository](https://docs.gitlab.com/ee/user/project/repository/) to [AWS CodeCommit](https://aws.amazon.com/codecommit/) and deploy your containerised application on ECS Anywhere cluster. 
