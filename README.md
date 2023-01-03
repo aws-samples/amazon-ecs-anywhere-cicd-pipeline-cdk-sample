@@ -7,7 +7,7 @@ This sample code can be beneficial to the customers who are already running thei
 
 ## Target architecture 
 
-![ECS-A](./images/ecs-a-pipeline.jpg)
+![ECS-A](./images/ecs-a-pipeline.png)
 
 ## Prerequisites 
 
@@ -20,6 +20,8 @@ This sample code can be beneficial to the customers who are already running thei
 4. Node package manager (npm), installed and configured for CDK Typescript. For more information about this, see [Downloading and installing Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) in the npm documentation.
 
 ## Deployment Steps
+
+Check out this APG Pattern for detailed deployment instructions: [Set up a CI/CD pipeline for hybrid workloads on Amazon ECS Anywhere by using AWS CDK and GitLab](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-a-ci-cd-pipeline-for-hybrid-workloads-on-amazon-ecs-anywhere-by-using-aws-cdk-and-gitlab.html?did=pg_card&trk=pg_card)
 
 ### 1. Build and deploy CDK ECS Anywhere Infrastructure Stack
 
