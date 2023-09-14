@@ -1,19 +1,14 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
-import { CdkCommand } from 'aws-cdk-lib/cloud-assembly-schema';
-import * as cdk from '@aws-cdk/core';
-import { ExternalService } from 'aws-cdk-lib/aws-ecs';
+import { CfnOutput } from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
-import { Repository } from 'aws-cdk-lib/aws-codecommit';
 import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import { NagSuppressions } from 'cdk-nag';
 
-
-
-export class EcsAnywhereCdkStack extends Stack {
+export class EAnywhereCdkStack extends Stack {
   public readonly service: ecs.ExternalService;
   public readonly repo: codecommit.Repository;
 
@@ -28,27 +23,28 @@ export class EcsAnywhereCdkStack extends Stack {
 
     // Create VPC
     const vpc = new ec2.Vpc(this, 'EcsAnywhereVPC', {
-      cidr: '192.168.0.0/16',
+      ipAddresses: ec2.IpAddresses.cidr('192.168.0.0/16'),
       vpcName: 'EcsAnywhereVpc',
       subnetConfiguration: [
         {
           cidrMask: 24,
           name: 'PrivateSubnet',
-          subnetType: ec2.SubnetType.PRIVATE,
-        }
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
+        {
+          subnetType: ec2.SubnetType.PUBLIC,
+          name: 'EcsAnywherePublic',
+          cidrMask: 24,
+        },
       ]
     });
-
+    NagSuppressions.addResourceSuppressions(vpc,[{id: 'AwsSolutions-VPC7', reason: 'lorem ipsum'}])
     // Create ECS cluster
     const ecsAnywhereCluster = new ecs.Cluster(this, 'EcsAnywhereCluster', {
       vpc,
       clusterName: "EcsAnywhereCluster",
     });
-
-    /*ecsAnywhereCluster.addCapacity('cluster-capacity', {
-      instanceType: new ec2.InstanceType("t2.xlarge"),
-      desiredCapacity: 1
-    })*/
+    NagSuppressions.addResourceSuppressions(ecsAnywhereCluster,[{id: 'AwsSolutions-ECS4', reason: 'atleast 10 characters'}])
 
     // Create task role
     // ECS task role
@@ -58,11 +54,7 @@ export class EcsAnywhereCdkStack extends Stack {
     });
     ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy"))
     ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AWSXRayDaemonWriteAccess"));
-
-    // ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AmazonRDSFullAccess"))
-    // ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2ContainerRegistryFullAccess"))
-    // ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("CloudWatchLogsFullAccess"))
-    //ecsTaskRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AWSXrayFullAccess"))    
+    NagSuppressions.addResourceSuppressions(ecsTaskRole,[{id: 'AwsSolutions-IAM4', reason: 'atleast 10 characters'}])
 
     // Grant access to Create Log group and Log Stream
     ecsTaskRole.addToPolicy(
@@ -71,14 +63,14 @@ export class EcsAnywhereCdkStack extends Stack {
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents",
-          "logs:DescribeLogStreams"          
+          "logs:DescribeLogStreams"
         ],
         resources: [
           "arn:aws:logs:*:*:*"
         ]
       })
     )
-
+    NagSuppressions.addResourceSuppressions(ecsTaskRole,[{id: 'AwsSolutions-IAM5',reason: 'Suppress all AwsSolutions-IAM5 findings'}],true);
 
     const executionRolePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -92,13 +84,14 @@ export class EcsAnywhereCdkStack extends Stack {
         "logs:PutLogEvents"
       ]
     });
+    
     // Create ExternalTaskDefinition
     const taskDefinition = new ecs.ExternalTaskDefinition(this, 'ExternalTaskDefinition', {
       taskRole: ecsTaskRole
     });
 
     taskDefinition.addToExecutionRolePolicy(executionRolePolicy);
-
+    NagSuppressions.addResourceSuppressions(taskDefinition,[{id: 'AwsSolutions-IAM5',reason: 'Suppress all AwsSolutions-IAM5 findings'}],true);
 
     const container = taskDefinition.addContainer('EcsAnywhereContainer', {
       image: ecs.ContainerImage.fromRegistry('nginxdemos/hello'),
@@ -130,6 +123,7 @@ export class EcsAnywhereCdkStack extends Stack {
       ]
     })
     instance_iam_role.withoutPolicyUpdates();
+    NagSuppressions.addResourceSuppressions(instance_iam_role,[{id: 'AwsSolutions-IAM4', reason: 'at least 10 characters'}])
 
 
     // Output
