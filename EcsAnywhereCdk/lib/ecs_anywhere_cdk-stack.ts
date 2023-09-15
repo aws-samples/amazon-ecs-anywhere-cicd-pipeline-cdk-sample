@@ -8,7 +8,7 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { NagSuppressions } from 'cdk-nag';
 
-export class EAnywhereCdkStack extends Stack {
+export class EcsAnywhereCdkStack extends Stack {
   public readonly service: ecs.ExternalService;
   public readonly repo: codecommit.Repository;
 
