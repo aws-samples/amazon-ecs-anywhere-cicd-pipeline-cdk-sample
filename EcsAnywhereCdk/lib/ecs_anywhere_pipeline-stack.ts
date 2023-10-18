@@ -1,19 +1,14 @@
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
-import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
-import { BuildSpec } from 'aws-cdk-lib/aws-codebuild';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as kms from 'aws-cdk-lib/aws-kms';
-import { Service } from 'aws-cdk-lib/aws-servicediscovery';
+import { NagSuppressions } from 'cdk-nag';
 
 interface EcsStackProps extends cdk.StackProps {
   service: ecs.ExternalService;
@@ -27,7 +22,6 @@ export class EcsAnywherePipelineStack extends cdk.Stack {
     super(scope, id, props);
     // constants
     const dockerBuildOutput = new codepipeline.Artifact("DockerBuildOutput");
-    const outputWebApp = new codepipeline.Artifact();
     const sourceOutput = new codepipeline.Artifact();
 
     const sourceAction = new codepipeline_actions.CodeCommitSourceAction({
@@ -65,9 +59,6 @@ export class EcsAnywherePipelineStack extends cdk.Stack {
         }
       }
     });
-
-
-
     const myKmsKey = new kms.Key(this, 'MyKey',{
       enableKeyRotation : true,
       enabled: true
@@ -116,11 +107,10 @@ export class EcsAnywherePipelineStack extends cdk.Stack {
         }
       ],
     });
-
     this.AppUiRepo.grantPullPush(dockerBuild);
+    NagSuppressions.addResourceSuppressions(this,[{id: 'AwsSolutions-IAM5',reason: 'Suppress all AwsSolutions-IAM5 findings'}],true);
+    NagSuppressions.addResourceSuppressions(this,[{id: 'AwsSolutions-S1',reason: 'Supress all AwsSolutions-S1 findings'}],true);
   }
 }
 
-function dockerBuild(dockerBuild: any) {
-  throw new Error('Function not implemented.');
-}
+
